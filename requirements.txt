@@ -1,0 +1,21 @@
+fastapi
+uvicorn
+
+#for database
+sqlalchemy
+
+#for loading environment variables
+python-dotenv
+
+#for email validation
+pydantic
+
+#for testing
+pytest
+requests
+
+#for accessing form data
+python-multipart
+
+#for dataframe
+pandas

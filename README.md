@@ -88,5 +88,13 @@ INFO:     Stopping reloader process [63813]
 
 ```
 
+# POSSIBLE WAYS WHERE TO DEPLOY THIS API
+1) On a dedicated server:
+    At this point you will need to prepare an environment on dedicated server and run API as instructed.
+    Or another way is to prepare a docker container with API and also use it on server.
+2) On some Cloud Service as AWS, AZURE:
+    Here it is possible to use a Docker container to deploy API to AWS.
+    Also possible to use this Docker in a serverless solutions of Cloud Services and configure corresponding databases.
+
 # Further notes
 Here should go any additional notes.

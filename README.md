@@ -7,70 +7,49 @@ The `csv-api` project provides a RESTful API for interacting with CSV files. It 
 
 ## Features
 
-### Data Upload and Parsing
-- **Upload CSV Files**: Easily upload .csv files through the API.
-- **Parse CSV Data**: Utilize Pandas for parsing CSV data into structured formats.
+### Upload and Parse CSV Files
+- **What it does**: Allows users to upload CSV files.
+- **Why it exists**: To provide an easy way to import data into the system.
+- **Why it is useful**: Enables quick data ingestion for further processing or analysis.
 
-### Database Management
-- **Store Data**: Store parsed data in a SQLite database using SQLAlchemy.
-- **CRUD Operations**: Perform CRUD operations on stored data via the API endpoints.
-
-### Configuration and Environment Variables
-- **Environment Variables**: Manage configuration through environment variables using `python-dotenv`.
-- **Database URI**: Specify the database URI in the `.env` file for connection settings.
+### Store Data in a Database
+- **What it does**: Parses uploaded CSV files and stores the data in a database.
+- **Why it exists**: To persistently store data for long-term use.
+- **Why it is useful**: Ensures that data is not lost and can be accessed at any time.
 
 ## How It Works
 
-The project is built using FastAPI, a modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints. The API routes are defined in `api/v1/route_information.py` and `api/v1/route_production.py`, which handle different types of CSV data.
+The `csv-api` uses FastAPI to create a RESTful API. The main entry point is `main.py`, which sets up the application, connects to the database, and mounts the routes defined in `api/collect_routes.py`.
 
 ### Architecture Diagram
 ```
-csv-api/
-├── api/
-│   ├── collect_routes.py
-│   ├── v1/
-│   │   ├── route_information.py
-│   │   └── route_production.py
-├── config.py
-├── db/
-│   ├── cruds/
-│   │   ├── crud_information.py
-│   │   └── crud_production.py
-│   ├── local_session.py
-│   └── models/
-│       ├── information_model.py
-│       └── production_model.py
-├── functional_design_1.pdf
-├── local_data/
-│   ├── csv_files/
-│   │   ├── Bemmel.csv
-│   │   ├── Netterden.csv
-│   │   ├── Stadskanaal.csv
-│   │   ├── Windskanaal.csv
-│   │   ├── Zwartenbergseweg.csv
-│   │   └── park_info.csv
-│   └── local_database.db
-├── main.py
-├── requirements.txt
-├── schemas/
-│   ├── information_schemas.py
-│   └── production_schemas.py
-└── test_api.py
++-------------------+
+|      main.py        |
+|  - Sets up app    |
+|  - Connects to DB |
+|  - Mounts routes  |
++---------+---------+
+          |
+          v
++---------+---------+
+| api/collect_routes.py |
+|  - Defines API endpoints for uploading and parsing CSV files. |
++-------------------+
 ```
 
 ## Technology Stack
 
 | Technology | Purpose |
 |------------|---------|
-| **FastAPI** | A modern, fast (high-performance) web framework for building APIs with Python 3.7+ based on standard Python type hints. |
-| **Uvicorn** | An ASGI server implementation for serving FastAPI applications. |
-| **SQLAlchemy** | A SQL toolkit and Object-Relational Mapping (ORM) system for Python. |
+| **FastAPI** | Asynchronous web framework for building APIs. |
+| **Uvicorn** | ASGI server implementation for running FastAPI applications. |
+| **SQLAlchemy** | SQL toolkit and Object-Relational Mapping (ORM) library. |
 | **Python-dotenv** | Loads environment variables from a `.env` file into `os.environ`. |
 | **Pydantic** | Data validation and settings management using Python type annotations. |
-| **Pytest** | A mature full-featured Python testing tool. |
-| **Requests** | HTTP for Humans. |
-| **Python-multipart** | Parse multipart/form-data, including file uploads. |
-| **Pandas** | An open-source data manipulation and analysis library. |
+| **Pytest** | Simple and scalable testing framework for Python. |
+| **Requests** | HTTP library for making requests to external APIs. |
+| **Python-multipart** | Library for parsing multipart/form-data, which is used for file uploads. |
+| **Pandas** | Data manipulation and analysis library. |
 
 ## Requirements
 
@@ -99,7 +78,7 @@ To set up your environment, follow these steps:
 
 ## Configuration
 
-The project uses a `.env` file to manage configuration variables. Ensure you have the following in your `.env` file:
+The project uses a `.env` file to load environment variables. Ensure you have the following variables set in your `.env` file:
 
 ```plaintext
 DATABASE_URL=sqlite:///./local_database.db
@@ -131,80 +110,78 @@ To access the API documentation, navigate to `http://localhost:8888/docs` in you
 
 ## Usage
 
-### Upload CSV Files
+### Upload a CSV File
 
-You can upload CSV files using the `/upload` endpoint. The request should be a multipart/form-data with the file field named `file`.
+You can upload a CSV file using the `/upload-csv` endpoint. Here is an example of how to do it using `curl`:
 
 ```commandline
-curl -X 'POST' \
-  'http://localhost:8888/upload' \
-  -H 'accept: application/json' \
-  -F 'file=@path/to/your/file.csv'
+>> curl -X POST "http://localhost:8888/upload-csv" -F "file=@path/to/your/file.csv"
 ```
 
-### Retrieve Data
+### Get CSV Data
 
-You can retrieve data from the database using the `/data` endpoint.
+You can retrieve data from the database using the `/get-data` endpoint. Here is an example of how to do it using `curl`:
 
 ```commandline
-curl -X 'GET' \
-  'http://localhost:8888/data' \
-  -H 'accept: application/json'
+>> curl -X GET "http://localhost:8888/get-data"
 ```
 
 ## Project Structure
 
-The project structure is organized as follows:
-
-- `api/`: Contains API route definitions.
-- `config.py`: Configuration settings.
-- `db/`: Database-related files, including models and CRUD operations.
-- `functional_design_1.pdf`: Functional design document.
-- `local_data/`: Local data files and database file.
-- `main.py`: Main entry point of the application.
-- `requirements.txt`: List of project dependencies.
-- `schemas/`: Pydantic schemas for data validation.
-- `test_api.py`: Test cases.
+```
+csv-api/
+├── .gitignore
+├── README.md
+├── api/
+│   ├── collect_routes.py
+│   └── v1/
+│       ├── route_information.py
+│       └── route_production.py
+├── config.py
+├── db/
+│   ├── cruds/
+│   │   ├── crud_information.py
+│   │   └── crud_production.py
+│   ├── local_session.py
+│   ├── models/
+│   │   ├── information_model.py
+│   │   └── production_model.py
+│   └── schemas/
+│       ├── information_schemas.py
+│       └── production_schemas.py
+├── functional_design_1.pdf
+├── local_data/
+│   ├── csv_files/
+│   │   ├── Bemmel.csv
+│   │   ├── Netterden.csv
+│   │   ├── Stadskanaal.csv
+│   │   ├── Windskanaal.csv
+│   │   └── Zwartenbergseweg.csv
+│   └── local_database.db
+├── main.py
+├── requirements.txt
+└── test_api.py
+```
 
 ## Development
 
-To develop this project, follow these steps:
+The development workflow involves setting up a virtual environment, installing dependencies, and running the application. The project uses `pytest` for testing.
 
-1. **Set up a virtual environment**:
-    ```commandline
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
+To run tests:
 
-2. **Install dependencies**:
-    ```commandline
-    pip install -r requirements.txt
-    ```
-
-3. **Run the application**:
-    ```commandline
-    python main.py
-    ```
-
-4. **Write tests**:
-    Run tests using Pytest:
-    ```commandline
-    pytest
-    ```
+```commandline
+>> pytest
+```
 
 ## Testing
 
-The project includes unit tests in `test_api.py`. You can run these tests using Pytest:
-
-```commandline
-pytest
-```
+The project includes unit tests in `test_api.py`. These tests ensure that the API endpoints are working as expected.
 
 ## Limitations
 
-- The API currently supports only SQLite as the database.
-- Error handling is basic and may need improvement for production use.
+- **Database Support**: Currently supports SQLite, but can be extended to support other databases.
+- **File Size**: The API does not handle large file uploads efficiently. Consider implementing chunked uploads for larger files.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
